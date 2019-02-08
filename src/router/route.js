@@ -1,8 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import lazyLoading from './lazyLoading'
 
 Vue.use(Router);
+
+import Home from '../components/Home.vue'
+import Item from '../components/Item.vue'
 
 export default new Router({
   mode: 'hash',
@@ -10,12 +12,12 @@ export default new Router({
     {
       name: 'home',
       path: '/home',
-      component: lazyLoading('Home'),
+      component: Home,
     },
     {
       name: 'item',
       path: '/home/:item',
-      component: lazyLoading('Item'),
+      component: Item,
     }
   ]
 })
