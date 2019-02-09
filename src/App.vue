@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h1>Табло рейсов</h1>
+    <h1 class="title">Табло рейсов</h1>
 
     <ul class="controls">
       <li>
@@ -16,14 +16,22 @@
       <input type="number" class="form-control" min="1" placeholder="Номер рейса" v-model="search">
     </label>
 
+    <label>
+      <input type="checkbox" v-model="delayed">
+      Задержанные
+    </label>
+
+
+    <hr>
+
     <ul class="flights">
       <li v-for="flight in getFlights" :key="flight.flightNumber">
-        <p>Номер: {{flight.flightNumber}}</p>
-        <p>Город: {{flight.city}}</p>
-        <p>Время: {{flight.time}}</p>
-        <p v-if="flight.delayed">
-          Задержан
-        </p>
+        <a href="" class="flight__item" :class="flight.delayed ? 'delayed' : ''">
+          <p class="flights__time">{{flight.time}}</p>
+          <p class="flights__city">{{flight.city}}</p>
+          <p class="flights__number">Рейс: <span>{{flight.flightNumber}}</span></p>
+          <p v-if="flight.delayed" class="flights__delayed">Задержан</p>
+        </a>
       </li>
     </ul>
 
@@ -42,7 +50,8 @@
         arrival: [],    //прибытие
         departure: [],    // отправка
         currentType: 'arr',   // текущий тип (прибытие / отправка)
-        search: ''          // поиск номера рейса
+        search: '',         // поиск номера рейса
+        delayed: false
       }
     },
     computed: {
@@ -61,11 +70,21 @@
           }
         }
 
-        return flights.filter(obj => {
-          if((obj.flightNumber).indexOf(str) + 1) {
-            return true;
-          }
-        })
+        if(this.delayed) {
+          return flights.filter(obj => {
+            if((obj.flightNumber).indexOf(str) + 1 && obj.delayed) {
+              return true;
+            }
+          })
+        } else {
+          return flights.filter(obj => {
+            if((obj.flightNumber).indexOf(str) + 1) {
+              return true;
+            }
+          })
+        }
+
+
        }
     },
     methods: {
@@ -171,6 +190,13 @@
 </script>
 
 <style lang="css">
+
+  .title {
+    color: #000000;
+    font-size: 25px;
+    font-weight: 700;
+    margin-top: 40px;
+  }
   .controls {
     list-style: none;
     display: flex;
@@ -194,4 +220,83 @@
     color: orange;
     text-decoration: none;
   }
+
+  .flights {
+    padding: 0;
+    list-style: none;
+  }
+  .flight__item {
+    display: block;
+    position: relative;
+    padding-left: 40px;
+    padding-right: 40px;
+    padding-top: 45px;
+    padding-bottom: 45px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    border: 1px solid black;
+    transition: all 0.2s ease;
+  }
+
+
+  .flight__item:hover,
+  .flight__item:focus {
+    text-decoration: none;
+    box-shadow: 5px 5px 10px 0px rgba(0, 0, 0, 0.2);
+    background-color: #7fff7f;
+  }
+
+  .flight__item:hover .flights__city,
+  .flight__item:focus .flights__city {
+    color: #077307;
+  }
+
+  .flights__city {
+    font-size: 35px;
+    line-height: 40px;
+    font-weight: 700;
+    color: #000000;
+    margin-left: 40px;
+    transition: color 0.3s ease;
+  }
+
+  .flights__time {
+    font-size: 18px;
+    line-height: 35px;
+    color: #000000;
+  }
+
+  .flights__number {
+    font-size: 18px;
+    color: #000000;
+    margin-left: auto;
+    margin-right: 50px;
+  }
+
+  .flights__number span{
+    font-size: 22px;
+    line-height: 35px;
+    font-weight: 700;
+  }
+
+  .flights__delayed {
+    position: absolute;
+    left: 15px;
+    top: 15px;
+    font-weight: 700;
+    color: #000000;
+    text-transform: uppercase;
+  }
+
+  .flight__item.delayed {
+    background-color: #ff9c9c;
+  }
+
+  label {
+    margin-right: 30px;
+    cursor: pointer;
+  }
+
+
 </style>
